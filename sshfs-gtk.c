@@ -56,12 +56,10 @@ static void Connect(GtkWidget *widget, data_struct *data) {
 
            		p = malloc(size);
 
-			snprintf(p, size, "%s@%s:%s %s", data->get_host_entry_text, data->get_ip_entry_text, 
-				      data->get_remote_folder_entry_text, data->get_local_mount_point_entry_text);				
+			snprintf(p, size, "%s@%s:%s", data->get_host_entry_text, data->get_ip_entry_text, data->get_remote_folder_entry_text);
 
-			//printf("%s", p);
+			execl("/usr/bin/sshfs", "sshfs", p, data->get_local_mount_point_entry_text, (const char *)NULL );
 
-			execlp("/usr/bin/sshfs", "sshfs", p, (const char *)NULL);
 
 		}
 }
