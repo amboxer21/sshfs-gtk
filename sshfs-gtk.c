@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <wchar.h>
 
 static void destroy( GtkWidget *widget, gpointer data ) {
 
@@ -13,10 +14,10 @@ static void destroy( GtkWidget *widget, gpointer data ) {
 }
 
 typedef struct {
-const gchar *get_host_entry_text;
-const gchar *get_remote_folder_entry_text;
-const gchar *get_local_mount_point_entry_text;
-const gchar *get_ip_entry_text;
+const char *get_host_entry_text;
+const char *get_remote_folder_entry_text;
+const char *get_local_mount_point_entry_text;
+const char *get_ip_entry_text;
 } data_struct;
  
 static void Connect(GtkWidget *widget, data_struct *data) {
@@ -29,7 +30,7 @@ static void Connect(GtkWidget *widget, data_struct *data) {
 
 	}
 
-		else if(strcmp((const char *)data->get_ip_entry_text, "IP ADDRESS") == 0 ) {
+		else if(strcmp(data->get_ip_entry_text, "IP ADDRESS") == 0 ) {
 
 			g_print("\nPlease enter an ip address.\n\n");
 
@@ -50,13 +51,17 @@ static void Connect(GtkWidget *widget, data_struct *data) {
 
 		else {
 
-			g_print("\nsshfs %s@%s:%s %s\n",data->get_host_entry_text, 
-							data->get_ip_entry_text, 
-							data->get_remote_folder_entry_text, 
-							data->get_local_mount_point_entry_text );
+			char *p;
+           		int size = 250;
 
-			char *execvp_args[] = { "sshfs", "sshfs", "data->get_host_entry_text@data->get_ip_entry_text:data->get_remote_folder_entry_text", "data->get_local_mount_point_entry_text", NULL };
-			execvp("sshfs", execvp_args);
+           		p = malloc(size);
+
+			snprintf(p, size, "%s@%s:%s %s", data->get_host_entry_text, data->get_ip_entry_text, 
+				      data->get_remote_folder_entry_text, data->get_local_mount_point_entry_text);				
+
+			//printf("%s", p);
+
+			execlp("/usr/bin/sshfs", "sshfs", p, (const char *)NULL);
 
 		}
 }
